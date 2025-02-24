@@ -8,7 +8,13 @@ describe Atm do
     allow(account).to receive(:balance=) 
   end
   it "allow withdraw if the account has enough balance." do
-    expected_output = { status: true, message: 'success', date: Date.today, amount: 45 }
+    expected_output = {
+      status: true,
+      message: 'success',
+      date: Date.today,
+      amount: 65 
+      bills: [20, 20, 20, 5]
+    } 
     expect(subject.withdraw(45, '1234', account, :disabled)).to eq expected_output
   end
   it "has 1000$ on initialize" do
