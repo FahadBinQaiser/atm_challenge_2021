@@ -12,10 +12,10 @@ describe Atm do
       status: true,
       message: 'success',
       date: Date.today,
-      amount: 65 
+      amount: 65, 
       bills: [20, 20, 20, 5]
     } 
-    expect(subject.withdraw(45, '1234', account, :disabled)).to eq expected_output
+    expect(subject.withdraw(65, '1234', account, :disabled)).to eq expected_output
   end
   it "has 1000$ on initialize" do
     expect(subject.funds).to eq 1000
