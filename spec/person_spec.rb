@@ -41,6 +41,29 @@ describe Person do
     it 'can deposit funds' do 
       expect(subject.deposit(100)).to be_truthy
     end
+
+    it 'funds are added to the account balance - deducted from cash' do
+      subject.cash = 100
+      subject.deposit(100)
+      expect(subject.account.balance).to eq(100)
+      expect(subject.cash).to eq(0)
+    end
+
+    it 'can withdraw funds' do
+      command = lambda {subject.withdraw(amount: 100, pin: subject.account.pin_code, account: subject.account, atm: atm)}
+      expand(command.call).to be_truthy
+    end
+    it 'withdraw is expected to raise error if no ATM is passed in' do 
+      command = lambda { subject.withdraw(amount: 100, pin: subject.account.pin_code, account: subject.account) }
+      expect {command.call}.to raise_error 'An ATM is required for a withdrawal'
+    end
+    it 'funds are added to the cash - deducted from account balance' do
+      subject.cash = 100
+      subject.deposit(100)
+      subject.withdraw(amount:100, pin: subject.account.pin_code, account:subject.account, atm: atm)
+      expect(subject.balance).to eq(0)
+      expect(subject.cash).to eq(200)
+    end
   end
 
   describe "can't manage funds if no account has been created" do
