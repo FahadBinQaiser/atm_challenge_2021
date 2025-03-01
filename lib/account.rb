@@ -1,9 +1,11 @@
 class Account
   STANDARD_VALIDITY_YRS = 5
   attr_reader :account_status, :owner 
+  attr_accessor :balance
   def initialize(attrs = {})
   @account_status = :active
     set_owner(attrs[:owner]) 
+    @balance = attrs[:balance]
   end
 
   def set_expire_date
