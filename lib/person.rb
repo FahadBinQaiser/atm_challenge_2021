@@ -27,8 +27,12 @@ class Person
   private
   
   def deposit_funds(amount)
-    @cash -= amount
-    @account.balance += amount
+    if @cash >= amount
+      @cash -= amount
+      @account.balance += amount
+    else
+      puts "Not enough cash to deposit."
+    end
   end
   
   def withdraw_funds(args)

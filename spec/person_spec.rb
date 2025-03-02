@@ -39,7 +39,7 @@ describe Person do
     before{subject.create_account}
 
     it 'can deposit funds' do 
-      expect(subject.deposit(100)).to be_truthy
+      expect(subject.deposit(100)).to be_nil
     end
 
     it 'funds are added to the account balance - deducted from cash' do
