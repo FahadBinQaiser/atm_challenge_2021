@@ -1,15 +1,17 @@
-require './lib/atm.rb'
-require './lib/person.rb'
+# frozen_string_literal: true
 
-describe Person do
-  subject{described_class.new(name: 'Fahad')}
+require './lib/atm'
+require './lib/person'
+
+describe Person do # rubocop:todo Metrics/BlockLength
+  subject { described_class.new(name: 'Fahad') }
 
   it 'is expected to have a :name on initialize' do
     expect(subject.name).not_to be nil
   end
 
   it 'is expected to raise an error if no name is set' do
-    expect{described_class.new}.to raise_error("Name is required")
+    expect { described_class.new }.to raise_error('Name is required')
   end
 
   it 'is expected to have a :cash attribute with the value of 0 on initialize' do
@@ -19,12 +21,11 @@ describe Person do
   it 'is expected to have :account attribute' do
     expect(subject.account).to be nil
   end
-  
-  describe 'can create an account' do
 
-    before {subject.create_account}
-    
-    it "of Account class" do
+  describe 'can create an account' do
+    before { subject.create_account }
+
+    it 'of Account class' do
       expect(subject.account.owner).to be_an_instance_of Person
     end
 
@@ -33,12 +34,11 @@ describe Person do
     end
   end
 
-  describe 'can manage funds if an account has been created' do
+  describe 'manage funds if an account has been created' do # rubocop:todo Metrics/BlockLength
+    let(:atm) { Atm.new }
+    before { subject.create_account }
 
-    let(:atm) {Atm.new}
-    before{subject.create_account}
-
-    it 'can deposit funds' do 
+    it 'can deposit funds' do
       expect(subject.deposit(100)).to be_nil
     end
 
@@ -50,26 +50,30 @@ describe Person do
     end
 
     it 'can withdraw funds' do
-      command = lambda {subject.withdraw(amount: 100, pin: subject.account.pin_code, account: subject.account, atm: atm)}
+      command = lambda {
+        subject.withdraw(amount: 100, pin: subject.account.pin_code, account: subject.account, atm: atm)
+      }
       expect(command.call).to be_truthy
     end
-    it 'withdraw is expected to raise error if no ATM is passed in' do 
-      command = lambda { subject.withdraw(amount: 100, pin: subject.account.pin_code, account: subject.account) }
-      expect{command.call}.to raise_error 'An ATM is required for a withdrawal'
+
+    it 'raises an error if no ATM is passed in' do
+      command = -> { subject.withdraw(amount: 100, pin: subject.account.pin_code, account: subject.account) }
+      expect { command.call }.to raise_error 'An ATM is required for a withdrawal'
     end
-    it 'funds are added to the cash - deducted from account balance' do
+
+    it 'funds are added to cash - deducted from account balance' do
       subject.cash = 100
       subject.deposit(100)
-      subject.withdraw(amount:100, pin: subject.account.pin_code, account:subject.account, atm: atm)
+      subject.withdraw(amount: 100, pin: subject.account.pin_code, account: subject.account, atm: atm)
       expect(subject.account.balance).to eq(0)
       expect(subject.cash).to eq(100)
     end
   end
 
-  describe "can't manage funds if no account has been created" do
 
+  describe "can't manage funds if no account has been created" do
     it 'can\'t deposit funds' do
-      expect {subject.deposit(100)}.to raise_error(RuntimeError, 'No account present')
+      expect { subject.deposit(100) }.to raise_error(RuntimeError, 'No account present')
     end
   end
 end
